@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Sharing</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+</head>
+
+<body>
+    <div class="container mt-5">
+        <% if (locals.fileLink != null) { %>
+        <div class="alert alert-success">
+            Your file has been uploaded successfully! <br>
+            <a href="<%= locals.fileLink %>"><%= locals.fileLink %></a>
+        </div>
+        <% } %>
+
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Upload File</h5>
+                <form action="/upload" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="file">Choose File:</label>
+                        <input type="file" class="form-control-file" id="file" name="downloadpath" required>
+                    </div>
+                    <div class="input-group">
+                      <input type="password" class="form-control" id="password" name="passcode" required>
+                      <div class="input-group-append">
+                          <span class="input-group-text" id="togglePassword">
+                              <i class="fa fa-eye-slash" aria-hidden="true"></i>
+                          </span>
+                      </div>
+                    </div>
+                    <small id="passwordHelp" class="form-text text-danger"></small>
+                    <button type="submit" class="btn btn-primary" id="submitButton">Share</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const passwordInput = document.getElementById('password');
+            const passwordHelp = document.getElementById('passwordHelp');
+            const submitButton = document.getElementById('submitButton');
+            const togglePassword = document.getElementById('togglePassword');
+            togglePassword.addEventListener('click', function () {
+                if (passwordInput.type === "password") {
+                    passwordInput.type = "text";
+                    togglePassword.innerHTML = '<i class="fa fa-eye" aria-hidden="true"></i>';
+                } else {
+                    passwordInput.type = "password";
+                    togglePassword.innerHTML = '<i class="fa fa-eye-slash" aria-hidden="true"></i>';
+                }
+            });
+            passwordInput.addEventListener('input', function () {
+            const password = passwordInput.value;
+            const passwordRegex = /^(?=.*[A-Z])(?=.*[&*^%$#@])(?=.*[a-z]).{8,}$/;
+
+            if (!passwordRegex.test(password)) {
+                passwordHelp.textContent = 'Password must be 8 characters long, start with a capital letter, and include one of &*^%$#@';
+                submitButton.disabled = true;
+            } else {
+                passwordHelp.textContent = '';
+                submitButton.disabled = false;
+            }
+        });
+    });
+    </script>
+</body>
+
+</html>
